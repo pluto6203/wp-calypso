@@ -29,9 +29,14 @@ import { RelatedPostCard } from 'blocks/reader-related-card-v2';
 import config from 'config';
 
 function RecommendedPosts( { post, site, } ) {
+	if ( ! site ) {
+		site = { title: post.site_name, };
+	}
+
 	return (
-		<li className="reader-related-card-v2__list-item">
-			<RelatedPostCard key={ post.global_ID } post={ post } site={ site } />
+		<li className="search-stream__recommendation-list-item">
+			<RelatedPostCard key={ post.global_ID } post={ post } site={ site }
+				lineClamp={ 3 } />
 		</li>
 	);
 }
@@ -192,11 +197,7 @@ const SearchStream = React.createClass( {
 			searchPlaceholderText = this.props.translate( 'Search billions of WordPress.com posts…' );
 		}
 
-		let sugList = this.state.suggestions.map( function( query ) {
-				return (
-					<Suggestion suggestion={ query } />
-				);
-			} );
+		let sugList = this.state.suggestions.map( ( query ) => <Suggestion suggestion={ query } /> );
 		sugList = sugList
 			.slice( 1 )
 			.reduce( function( xs, x ) {
@@ -233,26 +234,3 @@ const SearchStream = React.createClass( {
 } );
 
 export default localize( SearchStream );
-/*
-export function RefreshedBlankContent( { translate, suggestions } ) {
-	if ( suggestions ) {
-		let sugList = suggestions
-			.map( function( query ) {
-				return (
-					<Suggestion suggestion={ query } />
-				);
-			} );
-		sugList = sugList
-			.slice( 1 )
-			.reduce( function( xs, x ) {
-				return xs.concat( [ ', ', x ] );
-			}, [ sugList[ 0 ] ] );
-
-		const suggest = (
-			<p className="search-stream__blank-suggestions">
-				{ translate( 'Suggestions: {{suggestions /}}.', { components: { suggestions: sugList } } ) }
-			</p> );
-	}
-	return suggest;
-}
-*/
