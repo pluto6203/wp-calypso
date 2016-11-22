@@ -248,23 +248,6 @@ export function getSiteDomain( state, siteId ) {
 }
 
 /**
- * Returns the url for a site, or null if the site is unknown.
- *
- * @param  {Object}  state  Global state tree
- * @param  {Number}  siteId Site ID
- * @return {?String}        Site domain
- */
-export function getSiteUrl( state, siteId ) {
-	const site = getRawSite( state, siteId );
-
-	if ( ! site ) {
-		return null;
-	}
-
-	return site.URL;
-}
-
-/**
  * Returns a title by which the site can be canonically referenced. Uses the
  * site's name if available, falling back to its domain. Returns null if the
  * site is not known.

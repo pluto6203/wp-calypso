@@ -28,7 +28,7 @@ import QueryTerms from 'components/data/query-terms';
 import QuerySiteSettings from 'components/data/query-site-settings';
 import { getSelectedSiteId } from 'state/ui/selectors';
 import { getSiteSettings } from 'state/site-settings/selectors';
-import { getSiteUrl } from 'state/sites/selectors';
+import { getSite } from 'state/sites/selectors';
 import {
 	isRequestingTermsForQueryIgnoringPage,
 	getTermsLastPageForQuery,
@@ -247,7 +247,7 @@ export default connect( ( state, ownProps ) => {
 		terms: getTermsForQueryIgnoringPage( state, siteId, taxonomy, query ),
 		lastPage: getTermsLastPageForQuery( state, siteId, taxonomy, query ),
 		defaultTerm: taxonomy === 'category' ? get( siteSettings, [ 'default_category' ] ) : false,
-		siteUrl: getSiteUrl( state, siteId ),
+		siteUrl: get( getSite( state, siteId ), 'URL' ),
 		siteId,
 		query
 	};
