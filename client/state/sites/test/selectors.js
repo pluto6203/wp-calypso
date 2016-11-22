@@ -20,6 +20,7 @@ import {
 	getSiteSlug,
 	getSiteDomain,
 	getSiteTitle,
+	getSiteUrl,
 	getSiteThemeShowcasePath,
 	isSitePreviewable,
 	isRequestingSites,
@@ -576,6 +577,34 @@ describe( 'selectors', () => {
 			}, 2916284 );
 
 			expect( title ).to.equal( 'example.com' );
+		} );
+	} );
+
+	describe( 'getSiteUrl()', () => {
+		it( 'should return null if the site is not known', () => {
+			const title = getSiteUrl( {
+				sites: {
+					items: {}
+				}
+			}, 2916284 );
+
+			expect( title ).to.be.null;
+		} );
+
+		it( 'should return URL if site is known', () => {
+			const title = getSiteUrl( {
+				sites: {
+					items: {
+						2916284: {
+							ID: 2916284,
+							name: '',
+							URL: 'https://example.com'
+						}
+					}
+				}
+			}, 2916284 );
+
+			expect( title ).to.equal( 'https://example.com' );
 		} );
 	} );
 

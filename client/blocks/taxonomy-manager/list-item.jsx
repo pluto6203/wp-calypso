@@ -22,6 +22,8 @@ class TaxonomyManagerListItem extends Component {
 		onClick: PropTypes.func,
 		onDelete: PropTypes.func,
 		isDefault: PropTypes.bool,
+		siteUrl: PropTypes.string,
+		slug: PropTypes.string,
 	};
 
 	static defaultProps = {
@@ -50,12 +52,22 @@ class TaxonomyManagerListItem extends Component {
 		this.props.onClick();
 	};
 
-	deleteItem= () => {
+	deleteItem = () => {
 		this.setState( {
 			popoverMenuOpen: false
 		} );
 		this.props.onDelete();
 	};
+
+	getTaxonomyLink() {
+		const { taxonomy, siteUrl, slug } = this.props;
+		let taxonomyBase = taxonomy;
+
+		if ( taxonomy === 'post_tag' ) {
+			taxonomyBase = 'tag';
+		}
+		return `${ siteUrl }/${ taxonomyBase }/${ slug }/`;
+	}
 
 	render() {
 		const { isDefault, onDelete, postCount, name, translate } = this.props;
@@ -94,18 +106,15 @@ class TaxonomyManagerListItem extends Component {
 					position={ 'bottom left' }
 					context={ this.refs && this.refs.popoverMenuButton }
 				>
-					<PopoverMenuItem onClick={ this.editItem }>
-						<Gridicon icon="pencil" size={ 18 } />
+					<PopoverMenuItem onClick={ this.editItem } icon="pencil">
 						{ translate( 'Edit' ) }
 					</PopoverMenuItem>
 					{ onDelete &&
-						<PopoverMenuItem onClick={ this.deleteItem }>
-							<Gridicon icon="trash" size={ 18 } />
+						<PopoverMenuItem onClick={ this.deleteItem } icon="trash">
 							{ translate( 'Delete' ) }
 						</PopoverMenuItem>
 					}
-					<PopoverMenuItem>
-						<Gridicon icon="external" size={ 18 } />
+					<PopoverMenuItem href={ this.getTaxonomyLink() } icon="external">
 						{ translate( 'View Posts' ) }
 					</PopoverMenuItem>
 				</PopoverMenu>

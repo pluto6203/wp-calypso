@@ -28,6 +28,7 @@ import QueryTerms from 'components/data/query-terms';
 import QuerySiteSettings from 'components/data/query-site-settings';
 import { getSelectedSiteId } from 'state/ui/selectors';
 import { getSiteSettings } from 'state/site-settings/selectors';
+import { getSiteUrl } from 'state/sites/selectors';
 import {
 	isRequestingTermsForQueryIgnoringPage,
 	getTermsLastPageForQuery,
@@ -51,6 +52,7 @@ export class TaxonomyManagerList extends Component {
 		translate: PropTypes.func,
 		lastPage: PropTypes.number,
 		onTermClick: PropTypes.func,
+		siteUrl: PropTypes.string,
 	};
 
 	static defaultProps = {
@@ -123,7 +125,7 @@ export class TaxonomyManagerList extends Component {
 		}
 
 		const children = this.getTermChildren( item.ID );
-		const { onTermClick, defaultTerm, translate } = this.props;
+		const { onTermClick, defaultTerm, translate, taxonomy, siteUrl } = this.props;
 		const itemId = item.ID;
 		const isDefault = defaultTerm === itemId;
 		const name = decodeEntities( item.name ) || translate( 'Untitled' );
@@ -148,7 +150,9 @@ export class TaxonomyManagerList extends Component {
 						isDefault={ isDefault }
 						onClick={ onClick }
 						onDelete={ onDelete }
-					/>
+						taxonomy={ taxonomy }
+						slug={ item.slug }
+						siteUrl={ siteUrl } />
 				</CompactCard>
 				{ children.length > 0 && (
 					<div className="taxonomy-manager__nested-list">
@@ -243,6 +247,7 @@ export default connect( ( state, ownProps ) => {
 		terms: getTermsForQueryIgnoringPage( state, siteId, taxonomy, query ),
 		lastPage: getTermsLastPageForQuery( state, siteId, taxonomy, query ),
 		defaultTerm: taxonomy === 'category' ? get( siteSettings, [ 'default_category' ] ) : false,
+		siteUrl: getSiteUrl( state, siteId ),
 		siteId,
 		query
 	};
