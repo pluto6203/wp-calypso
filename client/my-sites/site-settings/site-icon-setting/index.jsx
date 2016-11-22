@@ -10,7 +10,9 @@ import { localize } from 'i18n-calypso';
  */
 import SiteIcon from 'components/site-icon';
 import Button from 'components/button';
-import SiteIconMediaModal from './site-icon-media-modal';
+import MediaLibrarySelectedData from 'components/data/media-library-selected-data';
+import AsyncLoad from 'components/async-load';
+import Dialog from 'components/dialog';
 import { isJetpackSite, getCustomizerUrl, getSiteAdminUrl } from 'state/sites/selectors';
 import { getSelectedSiteId } from 'state/ui/selectors';
 import { isEnabled } from 'config';
@@ -38,12 +40,20 @@ class SiteIconSetting extends Component {
 
 	showModal = () => this.toggleModal( true );
 
+	setSiteIcon = ( media ) => {
+		// [TODO]: Handle setting site icon
+		console.log( media ); // eslint-disable-line no-console
+
+		this.hideModal();
+	};
+
 	preloadModal() {
 		asyncRequire( 'post-editor/media-modal' );
 	}
 
 	render() {
 		const { translate, siteId, isJetpack, customizerUrl, generalOptionsUrl } = this.props;
+		const { isModalVisible } = this.state;
 		const isIconManagementEnabled = isEnabled( 'manage/site-settings/site-icon' );
 
 		let buttonProps;
@@ -84,10 +94,21 @@ class SiteIconSetting extends Component {
 					compact>
 					{ translate( 'Change', { context: 'verb' } ) }
 				</Button>
-				{ isIconManagementEnabled && (
-					<SiteIconMediaModal
-						visible={ this.state.isModalVisible }
-						onClose={ this.hideModal } />
+				{ isIconManagementEnabled && isModalVisible && (
+					<MediaLibrarySelectedData siteId={ siteId }>
+						<AsyncLoad
+							require="post-editor/media-modal"
+							placeholder={ (
+								<Dialog
+									additionalClassNames="editor-media-modal"
+									isVisible />
+							) }
+							siteId={ siteId }
+							onClose={ this.setSiteIcon }
+							enabledFilters={ [ 'images' ] }
+							visible
+							single />
+					</MediaLibrarySelectedData>
 				) }
 			</FormFieldset>
 		);
